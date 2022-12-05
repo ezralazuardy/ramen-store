@@ -79,7 +79,7 @@ defineProps({
 <template>
     <AppLayout title="Ramens">
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            <h2 class="font-semibold text-xl text-white leading-tight">
                 Ramen Management
             </h2>
         </template>

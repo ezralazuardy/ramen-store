@@ -43,6 +43,9 @@ Route::middleware([
         ],
         function () {
             Route::get("/", [RamenController::class, "index"])->name("index");
+            Route::get("trashed", [RamenController::class, "trashed"])->name(
+                "trashed"
+            );
             Route::get("create", [RamenController::class, "create"])->name(
                 "create"
             );
@@ -59,6 +62,14 @@ Route::middleware([
                 RamenController::class,
                 "destroy",
             ])->name("destroy");
+            Route::get("{id}/destroy-permanent", [
+                RamenController::class,
+                "destroy_permanent",
+            ])->name("destroy_permanent");
+            Route::get("{id}/restore", [
+                RamenController::class,
+                "restore",
+            ])->name("restore");
 
             // Ramen Categories Endpoint
             Route::group(
@@ -71,6 +82,10 @@ Route::middleware([
                         RamenCategoryController::class,
                         "index",
                     ])->name("index");
+                    Route::get("trashed", [
+                        RamenCategoryController::class,
+                        "trashed",
+                    ])->name("trashed");
                     Route::get("create", [
                         RamenCategoryController::class,
                         "create",
@@ -91,6 +106,14 @@ Route::middleware([
                         RamenCategoryController::class,
                         "destroy",
                     ])->name("destroy");
+                    Route::get("{id}/destroy-permanent", [
+                        RamenCategoryController::class,
+                        "destroy_permanent",
+                    ])->name("destroy_permanent");
+                    Route::get("{id}/restore", [
+                        RamenCategoryController::class,
+                        "restore",
+                    ])->name("restore");
                 }
             );
 
@@ -105,6 +128,10 @@ Route::middleware([
                         RamenStoreController::class,
                         "index",
                     ])->name("index");
+                    Route::get("trashed", [
+                        RamenStoreController::class,
+                        "trashed",
+                    ])->name("trashed");
                     Route::get("create", [
                         RamenStoreController::class,
                         "create",
@@ -122,9 +149,17 @@ Route::middleware([
                         "update",
                     ])->name("update");
                     Route::get("{id}/destroy", [
-                        RamenCategoryController::class,
+                        RamenStoreController::class,
                         "destroy",
                     ])->name("destroy");
+                    Route::get("{id}/destroy-permanent", [
+                        RamenStoreController::class,
+                        "destroy_permanent",
+                    ])->name("destroy_permanent");
+                    Route::get("{id}/restore", [
+                        RamenStoreController::class,
+                        "restore",
+                    ])->name("restore");
                 }
             );
         }

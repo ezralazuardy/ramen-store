@@ -10,13 +10,16 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 import TextInput from "@/Components/TextInput.vue";
 
 const nameInput = ref(null);
+const addressInput = ref(null);
 
 const form = useForm({
     name: null,
+    address: null,
 });
 
 const updateData = (ramenStore) => {
     form.name = ramenStore.name;
+    form.address = ramenStore.address;
     form.put(route("ramens.stores.update", ramenStore.id), {
         errorBag: "updateData",
         preserveScroll: true,
@@ -24,6 +27,10 @@ const updateData = (ramenStore) => {
             if (form.errors.name) {
                 form.reset("name");
                 nameInput.value.focus();
+            }
+            if (form.errors.address) {
+                form.reset("address");
+                addressInput.value.focus();
             }
         },
     });
@@ -56,10 +63,23 @@ defineProps({
                             ref="nameInput"
                             type="text"
                             class="mt-1 block w-full"
-                            autocomplete="current-password"
                             v-model="ramen_store.name"
                         />
                         <InputError :message="form.errors.name" class="mt-2" />
+                    </div>
+                    <div class="col-span-6 sm:col-span-4">
+                        <InputLabel for="address" value="Ramen Store Address" />
+                        <TextInput
+                            id="address"
+                            ref="addressInput"
+                            type="text"
+                            class="mt-1 block w-full"
+                            v-model="ramen_store.address"
+                        />
+                        <InputError
+                            :message="form.errors.address"
+                            class="mt-2"
+                        />
                     </div>
                 </template>
 

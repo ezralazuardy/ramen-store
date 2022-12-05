@@ -54,7 +54,6 @@ const storeData = () => {
                             v-model="form.name"
                             type="text"
                             class="mt-1 block w-full"
-                            autocomplete="current-password"
                         />
                         <InputError :message="form.errors.name" class="mt-2" />
                     </div>

@@ -12,16 +12,42 @@ class RamenStoreController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $ramenStores = DB::table("ramen_stores")
-            ->select(DB::raw("id, name, address, deleted_at"))
-            ->where("deleted_at", "=", null)
-            ->get();
+        $search = $request->query("search");
+        if (empty($search)) {
+            $ramenStores = DB::table("ramen_stores")
+                ->select(DB::raw("id, name, address, deleted_at"))
+                ->where("deleted_at", "=", null)
+                ->get();
+        } else {
+            $ramenStores = DB::table("ramen_stores")
+                ->select(DB::raw("id, name, address, deleted_at"))
+                ->where("deleted_at", "=", null)
+                ->where("name", "like", "%$search%")
+                ->get();
+        }
         return Inertia::render("RamenStores/Index", [
             "ramen_stores" => $ramenStores,
+        ]);
+    }
+
+    /**
+     * Display a listing of the trashed resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function trashed()
+    {
+        $trashedRamenStores = DB::table("ramen_stores")
+            ->select(DB::raw("id, name, deleted_at"))
+            ->where("deleted_at", "!=", null)
+            ->get();
+        return Inertia::render("RamenStores/Trashed", [
+            "trashed_ramen_stores" => $trashedRamenStores,
         ]);
     }
 
@@ -121,6 +147,37 @@ class RamenStoreController extends Controller
             ->where("id", "=", $id)
             ->update([
                 "deleted_at" => Carbon::now(),
+            ]);
+        return back();
+    }
+
+    /**
+     * Permanently remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy_permanent($id)
+    {
+        DB::table("ramen_stores")
+            ->where("id", "=", $id)
+            ->delete();
+        return back();
+    }
+
+    /**
+     * Restore the specified trashed resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function restore($id)
+    {
+        DB::table("ramen_stores")
+            ->where("deleted_at", "!=", null)
+            ->where("id", "=", $id)
+            ->update([
+                "deleted_at" => null,
             ]);
         return back();
     }

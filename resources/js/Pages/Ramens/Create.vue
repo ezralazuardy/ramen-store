@@ -18,8 +18,8 @@ const category = ref(null);
 const store = ref(null);
 
 const form = useForm({
-    category: 0,
-    store: 0,
+    category: null,
+    store: null,
     name: null,
     stock: null,
     price: null,
@@ -56,13 +56,12 @@ const storeData = (ramen_categories, ramen_stores) => {
     });
 };
 
-const chooseCategory = (ramen_category) => {
-    category.value = ramen_category;
+const chooseCategory = (ramenCategory) => {
+    category.value = ramenCategory;
 };
 
-const choose = (ramen_category) => {
-    console.log(ramen_category);
-    category.value = ramen_category;
+const chooseStore = (ramenStore) => {
+    store.value = ramenStore;
 };
 
 defineProps({
@@ -75,7 +74,7 @@ defineProps({
     <AppLayout title="Ramens">
         <template #header>
             <h2 class="font-semibold text-xl text-white leading-tight">
-                Ramens Management
+                Ramen Management
             </h2>
         </template>
 
@@ -177,6 +176,7 @@ defineProps({
                                 <li
                                     class="dropdown-item text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-gray-700 hover:bg-gray-100"
                                     v-for="ramen_store in ramen_stores"
+                                    @click="chooseStore(ramen_store)"
                                 >
                                     {{ ramen_store.name }}
                                 </li>

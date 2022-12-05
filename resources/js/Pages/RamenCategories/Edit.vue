@@ -56,7 +56,6 @@ defineProps({
                             ref="nameInput"
                             type="text"
                             class="mt-1 block w-full"
-                            autocomplete="current-password"
                             v-model="ramen_category.name"
                         />
                         <InputError :message="form.errors.name" class="mt-2" />

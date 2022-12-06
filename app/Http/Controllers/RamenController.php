@@ -18,60 +18,36 @@ class RamenController extends Controller
     public function index(Request $request)
     {
         $search = $request->query("search");
-        if (empty($search)) {
-            $ramens = DB::table("ramens")
-                ->select(
-                    DB::raw("
-                        ramens.id as id, ramens.name as name, ramen_categories.id as ramen_category_id,
-                        ramen_categories.name as ramen_category_name, ramen_stores.id as ramen_store_id,
-                        ramen_stores.name as ramen_store_name, users.name as user_name, ramens.stock as stock,
-                        ramens.price as price, ramens.deleted_at as deleted_at
-                    ")
-                )
-                ->where("ramens.deleted_at", "=", null)
-                ->join(
-                    "ramen_categories",
-                    "ramen_categories.id",
-                    "=",
-                    "ramens.category_id"
-                )
-                ->join(
-                    "ramen_stores",
-                    "ramen_stores.id",
-                    "=",
-                    "ramens.store_id"
-                )
-                ->join("users", "users.id", "=", "ramens.user_id")
-                ->get();
-        } else {
-            $ramens = DB::table("ramens")
-                ->select(
-                    DB::raw("
-                    ramens.id as id, ramens.name as name, ramen_categories.id as ramen_category_id,
-                    ramen_categories.name as ramen_category_name, ramen_stores.id as ramen_store_id,
-                    ramen_stores.name as ramen_store_name, users.name as user_name, ramens.stock as stock,
-                    ramens.price as price, ramens.deleted_at as deleted_at
-                    ")
-                )
-                ->where("ramens.deleted_at", "=", null)
+        $ramens = DB::table("ramens")
+            ->select(
+                DB::raw("
+            ramens.id as id, ramens.name as name, ramen_categories.id as ramen_category_id,
+            ramen_categories.name as ramen_category_name, ramen_stores.id as ramen_store_id,
+            ramen_stores.name as ramen_store_name, users.name as user_name, ramens.stock as stock,
+            ramens.price as price, ramens.deleted_at as deleted_at
+            ")
+            )
+
+            ->join(
+                "ramen_categories",
+                "ramen_categories.id",
+                "=",
+                "ramens.category_id"
+            )
+            ->join("ramen_stores", "ramen_stores.id", "=", "ramens.store_id")
+            ->join("users", "users.id", "=", "ramens.user_id")
+            ->where("ramens.deleted_at", "=", null);
+        if (!empty($search)) {
+            $ramens = $ramens
                 ->where("ramens.name", "like", "%$search%")
-                ->join(
-                    "ramen_categories",
-                    "ramen_categories.id",
-                    "=",
-                    "ramens.category_id"
-                )
-                ->join(
-                    "ramen_stores",
-                    "ramen_stores.id",
-                    "=",
-                    "ramens.store_id"
-                )
-                ->join("users", "users.id", "=", "ramens.user_id")
-                ->get();
+                ->orWhere("ramens.stock", "like", "%$search%")
+                ->orWhere("ramens.price", "like", "%$search%")
+                ->orWhere("ramen_categories.name", "like", "%$search%")
+                ->orWhere("ramen_stores.name", "like", "%$search%")
+                ->orWhere("users.name", "like", "%$search%");
         }
         return Inertia::render("Ramens/Index", [
-            "ramens" => $ramens,
+            "ramens" => $ramens->get(),
         ]);
     }
 
@@ -186,11 +162,11 @@ class RamenController extends Controller
         $ramen = DB::table("ramens")
             ->select(
                 DB::raw("
-                ramens.id as id, ramens.name as name, ramen_categories.id as ramen_category_id,
-                ramen_categories.name as ramen_category_name, ramen_stores.id as ramen_store_id,
-                ramen_stores.name as ramen_store_name, users.name as user_name, ramens.stock as stock,
-                ramens.price as price, ramens.deleted_at as deleted_at
-        ")
+                    ramens.id as id, ramens.name as name, ramen_categories.id as ramen_category_id,
+                    ramen_categories.name as ramen_category_name, ramen_stores.id as ramen_store_id,
+                    ramen_stores.name as ramen_store_name, users.name as user_name, ramens.stock as stock,
+                    ramens.price as price, ramens.deleted_at as deleted_at
+                ")
             )
             ->where("ramens.deleted_at", "=", null)
             ->where("ramens.id", "=", $id)
